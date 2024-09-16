@@ -1,0 +1,58 @@
+<% layout('./layouts/boilerplate') %>
+    <div class="col-6 offset-3">
+        <h1 class="text-center">NEW Campground</h1>
+        <form action="/campgrounds" method="POST" class="myForm row g-3" novalidate>
+
+
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Title" name="campground[title]"
+                    required>
+                <div class="invalid-feedback">
+                    Missing!!
+                </div>
+
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" placeholder="Location" name="campground[location]"
+                    required>
+                <div class="invalid-feedback">
+                    Missing!!
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image URL</label>
+                <input type="text" class="form-control" id="image" placeholder="Image URL" name="campground[image]"
+                    required>
+                <div class="invalid-feedback">
+                    Missing!!
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea type="text" class="form-control" id="description" placeholder="Description" rows="4" cols="50"
+                    name="campground[description]" required></textarea>
+            </div>
+            <div>
+                <label for="price" class="form-label">Price</label>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">DA</span>
+                <input type="text" class="form-control" id="price" placeholder="0.00"
+                    aria-label="Amount (to the nearest Dinars)" name="campground[price]" required>
+                <div class="invalid-feedback">
+                    Missing!!
+                </div>
+            </div>
+            <div class="row justify-content-between text-center">
+
+                <div class="col-3">
+                    <button class="btn btn-success">Camp It</button>
+                </div>
+                <div class="col-3">
+                    <a href="/campgrounds" class="btn btn-danger">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>

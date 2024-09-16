@@ -1,0 +1,45 @@
+<% layout('./layouts/boilerplate') %>
+    <div class="col-6 offset-3">
+        <h1 class="text-center">Edit Campground</h1>
+
+        <form action="/campgrounds/<%= camp.id %>?_method=PUT" method="POST" novalidate class="myForm">
+
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Title" name="campground[title]"
+                    value="<%= camp.title %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="locimageation" class="form-label">Image URL</label>
+                <input type="text" class="form-control" id="image" placeholder="URL" name="campground[image]"
+                    value="<%= camp.image %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" placeholder="Location" name="campground[location]"
+                    value="<%= camp.location %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea type="text" class="form-control" id="description" placeholder="Description" rows="4" cols="50"
+                    name="campground[description]" required><%= camp.description %></textarea>
+            </div>
+            <div>
+                <label for="price" class="form-label">Price</label>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">DA</span>
+                <input type="text" class="form-control" id="price" aria-label="Amount (to the nearest dollar)"
+                    name="campground[price]" value="<%= camp.price %>" required>
+            </div>
+            <div class="row justify-content-between text-center">
+
+                <div class="col-3">
+                    <button class="btn btn-info">Camp It</button>
+                </div>
+                <div class="col-3">
+                    <a href="/campgrounds" class="btn btn-danger">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>

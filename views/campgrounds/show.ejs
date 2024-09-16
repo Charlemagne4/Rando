@@ -1,0 +1,31 @@
+<% layout('./layouts/boilerplate') %>
+    <div class="card mb-3">
+        <img src="<%= camp.image %>" class="card-img-top rounded img-fluid img-thumbnail" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">
+                <%= camp.title %>
+            </h5>
+            <p class="card-text">
+                <%= camp.description %>
+            </p>
+            <p class="card-text">
+                <% if(camp.price==0){ %>
+                    <b>Price: FREE</b>
+                    <% } else {%>
+                        <b>Price: <%= camp.price %> Da</b>
+                        <% } %>
+            </p>
+            <p class="card-text"><small class="text-body-secondary">
+                    <%= camp.location %>
+                </small></p>
+            <p class="card-text">
+                <a href="/campgrounds">All Campgrounds</a>
+            </p>
+            <p class="card-text">
+                <a href="/campgrounds/<%=camp.id %>/edit">EDIT</a>
+            </p>
+            <form action="/campgrounds/<%=camp.id %>?_method=DELETE" method="POST">
+                <button>DELETE</button>
+            </form>
+        </div>
+    </div>
