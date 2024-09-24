@@ -10,7 +10,8 @@ const displayCurrentTime = require('./Utility/time');
 const catchAsync = require('./Utility/catchAsync');
 const ExpressErrorHandler = require("./Utility/ExpressErrorHandler");
 const Joi = require('joi');
-const { campgroundJoiSchema } = require('./schemas');
+const { campgroundJoiSchema, reviewJoiSchema } = require('./schemas');
+const Review = require('./models/review')
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/RanDo').then(() => {
@@ -37,6 +38,15 @@ const validateCampground = (req, res, next) => {
         next();
     }
 }
+const validateReview = (req, res, next) => {
+    const { error } = reviewJoiSchema.validate(req.body);  // Validate only the review part
+    if (error) {
+        const msg = error.details.map(el => el.message).join(",");
+        throw new ExpressErrorHandler(msg, 400);  // Custom error handler
+    } else {
+        next();  // Proceed if validation passes
+    }
+};
 
 //home(in progress or might delete)
 app.get('/', (req, res) => {
@@ -53,7 +63,7 @@ app.get('/campgrounds/new', (req, res) => {
 //show the camp found by id 
 app.get('/campgrounds/:id', catchAsync(async (req, res) => {
     const { id } = req.params
-    const camp = await Campground.findById(id)
+    const camp = await Campground.findById(id).populate('reviews')
     if (camp) {
         res.render('campgrounds/show', { camp })
     } else {
@@ -97,6 +107,27 @@ app.delete('/campgrounds/:id', async (req, res) => {
         next(e);
     }
 })
+
+
+app.post('/campgrounds/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    const { id } = req.params
+    const campground = await Campground.findById(id)
+    const review = new Review(req.body.review)
+    campground.reviews.push(review)
+    await review.save()
+    await campground.save()
+    res.redirect(`/campgrounds/${id}`)
+
+}))
+
+app.delete('/campgrounds/:campId/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { campId, reviewId } = req.params;
+    await Review.findByIdAndDelete(reviewId)
+    await Campground.findByIdAndUpdate(campId, { $pull: { reviews: reviewId } })
+    console.log("tentative de supression");
+    res.redirect(`/campgrounds/${campId}`)
+
+}))
 
 app.all('*', (req, res, next) => {
     next(new ExpressErrorHandler("Not Found!", 404))
