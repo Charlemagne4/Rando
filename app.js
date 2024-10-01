@@ -7,13 +7,15 @@ const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
 const displayCurrentTime = require('./Utility/time');
 const ExpressErrorHandler = require("./Utility/ExpressErrorHandler");
-
+const passport = require('passport')
+const localStrategy = require('passport-local')
+const User = require('./models/user')
 
 const port = 3000
 const app = express()
 const campgroundsRoutes = require('./routes/campgrounds')
 const reviewsRoutes = require('./routes/reviews');
-const cookie = require('express-session/session/cookie');
+const usersRoutes = require('./routes/users')
 
 
 mongoose.connect('mongodb://127.0.0.1:27017/RanDo').then(() => {
@@ -46,6 +48,25 @@ const sessionConfig = {
 
 app.use(session(sessionConfig))
 app.use(flash())
+//authentification init with passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+app.get('/faker', async (req, res) => {
+    const user = new User(
+        {
+            email: 'moha@gmail.com',
+            username: 'moh EL FAKER'
+
+        }
+    )
+    const newUser = await User.register(user, '1234')
+    res.send(newUser);
+
+})
 
 app.use('/', function (req, res, next) {
     res.locals.success = req.flash('success')
@@ -53,6 +74,7 @@ app.use('/', function (req, res, next) {
     next()
 })
 //ROUTES
+app.use("/", usersRoutes)
 app.use("/campgrounds", campgroundsRoutes)
 app.use("/campgrounds/:id/reviews", reviewsRoutes)
 

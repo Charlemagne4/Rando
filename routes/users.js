@@ -1,0 +1,53 @@
+const express = require("express");
+const router = express.Router();
+const catchAsync = require('../Utility/catchAsync');
+const ExpressErrorHandler = require("../Utility/ExpressErrorHandler");
+const User = require("../models/user")
+const passport = require('passport')
+
+router.get('/register', (req, res) => {
+    res.render('users/register')
+})
+
+router.post('/register', catchAsync(async (req, res) => {
+    try {
+        const { password, username, email } = req.body;
+        const newUser = new User(
+            {
+                email,
+                username
+            }
+        );
+        const registeredUser = await User.register(newUser, password);
+        req.flash('success', 'Welcome to Yelp Camp')
+        res.redirect('/campgrounds')
+    } catch (error) {
+        req.flash('error', error.message)
+        res.redirect('/register')
+    }
+
+
+}))
+
+router.get('/login', (req, res) => {
+    res.render('users/login')
+})
+
+router.post('/login',
+    passport.authenticate(
+        'local',
+        { failureFlash: true, failureRedirect: '/login' }
+    ),
+    async (req, res) => {
+        const loggedUser = req.user
+        req.flash('success', `Welcome back ${loggedUser.username}`)
+        res.redirect('/campgrounds')
+
+    })
+
+
+
+
+module.exports = router;
+
+
