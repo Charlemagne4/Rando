@@ -5,16 +5,9 @@ const ExpressErrorHandler = require("../Utility/ExpressErrorHandler");
 const { reviewJoiSchema } = require('../schemas');
 const Campground = require('../models/campground');
 const Review = require('../models/review')
+const { validateReview, isAuthor, isLoggedIn } = require('../middleware')
 
-const validateReview = (req, res, next) => {
-    const { error } = reviewJoiSchema.validate(req.body);  // Validate only the review part
-    if (error) {
-        const msg = error.details.map(el => el.message).join(",");
-        throw new ExpressErrorHandler(msg, 400);  // Custom error handler
-    } else {
-        next();  // Proceed if validation passes
-    }
-};
+
 
 router.post('/', validateReview, catchAsync(async (req, res) => {
     const { id } = req.params

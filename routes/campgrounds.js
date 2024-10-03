@@ -2,19 +2,10 @@ const express = require("express");
 const router = express.Router();
 const Campground = require('../models/campground');
 const catchAsync = require('../Utility/catchAsync');
-const ExpressErrorHandler = require("../Utility/ExpressErrorHandler");
-const { campgroundJoiSchema } = require('../schemas');
-const { isLoggedIn } = require('../middleware')
+const { isLoggedIn, isAuthor, validateCampground } = require('../middleware')
 
-const validateCampground = (req, res, next) => {
-    const { error } = campgroundJoiSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(",")
-        throw new ExpressErrorHandler(msg, 400)
-    } else {
-        next();
-    }
-}
+
+
 router.get('/', catchAsync(async (req, res) => {
     const camps = await Campground.find({})
     res.render('campgrounds/index', { camps })
@@ -35,16 +26,12 @@ router.get('/:id', catchAsync(async (req, res) => {
     res.render('campgrounds/show', { camp })
 }))
 //Form for editing a camp
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res, next) => {
     const { id } = req.params
     const camp = await Campground.findById(id)
     if (!camp) {
         req.flash('error', "rak Tkhalet fe swaleh khatik (Campground not found)")
         return res.redirect('/campgrounds');
-    }
-    if (!camp.author.equals(req.user._id)) {
-        req.flash('error', "Action Not Authorized")
-        return res.redirect(`/campgrounds/${id}`)
     }
     res.render('campgrounds/edit', { camp })
 }))
@@ -62,7 +49,7 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
 }))
 
 //update a camp 
-router.put('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params
     const camp = await Campground.findById(id)
     if (!camp.author.equals(req.user._id)) {
@@ -74,14 +61,9 @@ router.put('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) =
     res.redirect(`/campgrounds/${id}`)
 }));
 //delete a camp 
-router.delete('/:id', isLoggedIn, async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, async (req, res) => {
     try {
         const { id } = req.params
-        const camp = await Campground.findById(id)
-        if (!camp.author.equals(req.user._id)) {
-            req.flash('error', "Action Not Authorized")
-            return res.redirect(`/campgrounds/${id}`)
-        }
         const deletedCamp = await Campground.findByIdAndDelete(id)
         req.flash('success', `LALAAAAA na7it "${deletedCamp.title}"`)
         res.redirect(`/campgrounds`)

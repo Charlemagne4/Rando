@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const catchAsync = require('../Utility/catchAsync');
-const ExpressErrorHandler = require("../Utility/ExpressErrorHandler");
 const User = require("../models/user")
 const passport = require('passport')
-const { ReturnTo, logAndReturnTo } = require('../middleware')
+const { ReturnTo } = require('../middleware')
 
 router.get('/register', (req, res) => {
     res.render('users/register')
