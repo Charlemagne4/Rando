@@ -56,7 +56,8 @@ const seedDB = async () => {
             location: `${cities[random58].city}, ${cities[random58].country}`,
             description: `${sample(descriptions)}`,
             price: `${sample(price)}`,
-            image: `${pictures[i]}`
+            image: `${pictures[i]}`, 
+            author: '66fc1fbab49fbcf448846fba'
         })
         await camp.save()
 

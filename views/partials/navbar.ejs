@@ -19,7 +19,20 @@
                 <li class="nav-item">
                     <a class="nav-link disabled" aria-disabled="true">Disabled</a>
                 </li>
-            </ul>
+            </ul>   
+            <div class="navbar-nav ms-auto"> <!-- Add ms-auto to push Login to the right -->
+                <% if (!currentUser) { %>
+                    <a class="nav-link" href="/login" aria-disabled="true">Login</a>
+                    <a class="nav-link" href="/Register" aria-disabled="true">Register</a>
+                <% } else { %>
+                    <a class="nav-link" href="https://warthunder.com/fr"><%= currentUser.username %></a>
+               <form action="/logout?_method=DELETE" method="POST">
+                    <button class="nav-link">
+                    <img src="https://icon-library.com/images/logout-icon-transparent/logout-icon-transparent-9.jpg" alt="Logout" style="width: 25px; height: 25px;">
+                    </button>
+                </form>
+                    <% } %>
+            </div>        
         </div>
     </div>
 </nav>

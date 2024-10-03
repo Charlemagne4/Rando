@@ -27,7 +27,7 @@ router.get('/new', isLoggedIn, (req, res) => {
 //show the camp found by id 
 router.get('/:id', catchAsync(async (req, res) => {
     const { id } = req.params
-    const camp = await Campground.findById(id).populate('reviews')
+    const camp = await Campground.findById(id).populate('reviews').populate('author')
     if (!camp) {
         req.flash('error', "rak Tkhalet fe swaleh khatik (Campground not found)")
         return res.redirect('/campgrounds');
@@ -42,6 +42,10 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res, next) => {
         req.flash('error', "rak Tkhalet fe swaleh khatik (Campground not found)")
         return res.redirect('/campgrounds');
     }
+    if (!camp.author.equals(req.user._id)) {
+        req.flash('error', "Action Not Authorized")
+        return res.redirect(`/campgrounds/${id}`)
+    }
     res.render('campgrounds/edit', { camp })
 }))
 //add new camp
@@ -50,6 +54,7 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
 
 
     const newCamp = new Campground(req.body.campground)
+    newCamp.author = req.user._id
     await newCamp.save();
     req.flash('success', "Waw ak ta3ref tzid campground")
     res.redirect(`/campgrounds/${newCamp.id}`)
@@ -59,6 +64,11 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
 //update a camp 
 router.put('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) => {
     const { id } = req.params
+    const camp = await Campground.findById(id)
+    if (!camp.author.equals(req.user._id)) {
+        req.flash('error', "Action Not Authorized")
+        return res.redirect(`/campgrounds/${id}`)
+    }
     await Campground.findByIdAndUpdate(id, req.body.campground)
     req.flash('success', "ZID rak ta3ref Tupdati Campground")
     res.redirect(`/campgrounds/${id}`)
@@ -67,6 +77,11 @@ router.put('/:id', isLoggedIn, validateCampground, catchAsync(async (req, res) =
 router.delete('/:id', isLoggedIn, async (req, res) => {
     try {
         const { id } = req.params
+        const camp = await Campground.findById(id)
+        if (!camp.author.equals(req.user._id)) {
+            req.flash('error', "Action Not Authorized")
+            return res.redirect(`/campgrounds/${id}`)
+        }
         const deletedCamp = await Campground.findByIdAndDelete(id)
         req.flash('success', `LALAAAAA na7it "${deletedCamp.title}"`)
         res.redirect(`/campgrounds`)
