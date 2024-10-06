@@ -1,4 +1,5 @@
 const Campground = require('./models/campground')
+const Review = require('./models/review')
 const ExpressErrorHandler = require("./Utility/ExpressErrorHandler");
 const { campgroundJoiSchema, reviewJoiSchema } = require('./schemas');
 
@@ -50,4 +51,13 @@ module.exports.validateReview = (req, res, next) => {
     } else {
         next();  // Proceed if validation passes
     }
+};
+module.exports.isReviewAuthor = async (req, res, next) => {
+    const { id, reviewId } = req.params;
+    const review = await Review.findById(reviewId)
+    if (!review.author.equals(req.user._id)) {
+        req.flash('error', "Action Not Authorized")
+        return res.redirect(`/campgrounds/${id}`)
+    }
+    next()
 };

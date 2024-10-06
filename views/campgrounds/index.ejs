@@ -1,33 +1,52 @@
 <% layout('./layouts/boilerplate') %>
-    <H1>all Campgrounds</H1>
-    <a href="/campgrounds/new">NEW</a>
 
-    <ul>
-        <% for( let camp of camps ) { %>
+<div class="container mt-5">
+    <!-- Page Heading -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-4 text-primary">All Campgrounds</h1>
+        <a href="/campgrounds/new" class="btn btn-success btn-lg shadow">
+            <i class="fas fa-plus-circle me-2"></i> New Campground
+        </a>
+    </div>
 
+    <!-- List of Campgrounds -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% for(let camp of camps) { %>
+            <div class="col">
+                <!-- Make the entire card clickable -->
+                <a href="/campgrounds/<%= camp.id %>" class="text-decoration-none">
+                    <div class="card h-100 shadow-lg border-0" style="border-radius: 20px;">
+                        <div class="row g-0">
+                            <!-- Campground Image -->
+                            <div class="col-md-5">
+                                <img src="<%= camp.image %>" class="img-fluid rounded-start" alt="<%= camp.title %> Image" style="height: 200px; object-fit: cover;">
+                            </div>
 
-            <div class="card mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        <img src="<%= camp.image %>" class="img-fluid rounded-start" alt="...">
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title"><a href="campgrounds/<%= camp.id %>">
-                                    <%= camp.title %>
-                                </a></h5>
-                            <p class="card-text">
-                                <%= camp.description %>
-                            </p>
-                            <p class="card-text"><small class="text-body-secondary">
-                                    <%= camp.location %>
-                                </small>
-                            </p>
+                            <!-- Campground Info -->
+                            <div class="col-md-7 d-flex align-items-center">
+                                <div class="card-body">
+                                    <!-- Title -->
+                                    <h5 class="card-title">
+                                        <%= camp.title %>
+                                    </h5>
+
+                                    <!-- Description -->
+                                    <p class="card-text text-muted">
+                                        <%= camp.description.length > 100 ? camp.description.substring(0, 100) + '...' : camp.description %>
+                                    </p>
+
+                                    <!-- Location -->
+                                    <p class="card-text">
+                                        <small class="text-body-secondary">
+                                            <i class="fas fa-map-marker-alt me-1"></i> <%= camp.location %>
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
-
-
-            <% } %>
-    </ul>
+        <% } %>
+    </div>
+</div>

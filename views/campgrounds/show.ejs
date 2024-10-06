@@ -1,82 +1,114 @@
 <% layout('./layouts/boilerplate') %>
 
-<div class="container mt-4">
-    <div class="row g-4">
+<div class="container mt-5">
+    <div class="row g-5">
+        
         <!-- Campground Card -->
-        <div class="card mb-3 col-lg-6 col-md-12 shadow-sm">
-            <img src="<%= camp.image %>" class="card-img-top rounded img-fluid img-thumbnail" alt="Campground Image">
-            <div class="card-body">
-                <h5 class="card-title fs-4">
-                    <%= camp.title %>
-                    <p class="fs-6 fst-italic text-muted">By <%= camp.author.username %></p>
-                </h5>
-                <p class="card-text">
-                    <%= camp.description %>
-                </p>
-                <p class="card-text fw-bold">
-                    <% if(camp.price == 0) { %>
-                        Price: FREE
-                    <% } else { %>
-                        Price: <%= camp.price %> Da
-                    <% } %>
-                </p>
-                <p class="card-text text-muted">
-                    <small>
-                        <i class="fas fa-map-marker-alt"></i> <%= camp.location %>
-                    </small>
-                </p>
-                <div class="d-flex justify-content-between">
-                    <a href="/campgrounds" class="btn btn-secondary">All Campgrounds</a>
-                    <% if (currentUser && camp.author.equals(currentUser.id)) { %>  
-                        <div>
-                            <a href="/campgrounds/<%=camp.id %>/edit" class="btn btn-primary me-2">Edit</a>
-                            <form action="/campgrounds/<%=camp.id %>?_method=DELETE" method="POST" style="display:inline;">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    <% }  %>
-
-                     
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow-lg border-0">
+                <img src="<%= camp.image %>" class="card-img-top rounded img-fluid img-thumbnail" alt="Campground Image" style="max-height: 400px; object-fit: cover;">
+                <div class="card-body">
+                    <h3 class="card-title mb-2"><%= camp.title %></h3>
+                    <p class="text-muted mb-3">By <%= camp.author.username %></p>
+                    <p class="card-text fs-5 mb-4">
+                        <%= camp.description %>
+                    </p>
+                    <p class="card-text fw-bold fs-4">
+                        <% if(camp.price == 0) { %>
+                            Price: FREE
+                        <% } else { %>
+                            Price: <%= camp.price %> Da
+                        <% } %>
+                    </p>
+                    <p class="card-text text-muted">
+                        <small>
+                            <i class="fas fa-map-marker-alt"></i> <%= camp.location %>
+                        </small>
+                    </p>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="/campgrounds" class="btn btn-secondary btn-lg">All Campgrounds</a>
+                        <% if (currentUser && camp.author.equals(currentUser.id)) { %>  
+                            <div class="d-flex">
+                                <a href="/campgrounds/<%=camp.id %>/edit" class="btn btn-primary btn-lg me-2">Edit</a>
+                                <form action="/campgrounds/<%=camp.id %>?_method=DELETE" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-lg">Delete</button>
+                                </form>
+                            </div>
+                        <% }  %>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Review Section -->
-        <div class="card mb-3 col-lg-6 col-md-12 shadow-sm">
-            <div class="card-body">
-                <h2 class="card-title mb-4">Leave a Review</h2>
-                <form action="/campgrounds/<%= camp.id %>/reviews" method="POST" class="validated-form">
-                    <div class="mb-3">
-                        <label class="form-label" for="rating">Rating</label>
-                        <input id="rating" class="form-range" type="range" name="review[rating]" min="1" max="5">
-                    </div>
-                    <div class="mb-3 form-floating">
-                        <textarea class="form-control" placeholder="Please enter your review..." minlength="10" name="review[body]" id="body" style="height: 100px" required></textarea>
-                        <div class="invalid-tooltip">Missing review!</div>
-                        <label for="body">Review</label>
-                    </div>
-                    <button class="btn btn-success">Submit Review</button>
-                </form>
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <% if (currentUser) { %>
+                        <h2 class="card-title text-primary mb-4">Leave a Review</h2>
+                        <form action="/campgrounds/<%= camp.id %>/reviews" method="POST" class="validated-form">
+                            <div class="mb-3">
+                                <label class="form-label" for="rating">Rating</label>
+                                <input id="rating" class="form-range" type="range" name="review[rating]" min="1" max="5">
+                            </div>
+                            <div class="mb-3 form-floating">
+                                <textarea class="form-control" placeholder="Please enter your review..." minlength="10" name="review[body]" id="body" style="height: 100px" required></textarea>
+                                <label for="body">Review</label>
+                                <div class="invalid-tooltip">Missing review!</div>
+                            </div>
+                            <button class="btn btn-success btn-lg">Submit Review</button>
+                        </form>
+                    <% } %>
 
-                <!-- Display Reviews -->
-                <div class="mt-4">
-                    <% camp.reviews.forEach(review => { %>
-                        <div class="row mb-3 card bg-light">
-                            <div class="card-body col-lg-9 col-md-8">
-                                <h5 class="card-title">
-                                    <span class="fw-bold">Rating:</span> <%= review.rating %> <i class="fas fa-star text-warning"></i>
-                                </h5>
-                                <p class="card-text">
-                                    <%= review.body %>
-                                </p>
+                    <!-- Display Reviews -->
+                    <div class="mt-5">
+                        <h2 class="text-center mb-5 text-primary display-6">What People Are Saying</h2>
+
+                        <% camp.reviews.forEach(review => { %>
+                            <div class="card mb-4 shadow-lg border-0" style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border-radius: 20px;">
+                                <div class="row g-0 align-items-center">
+
+                                    <!-- Review Body with Rating and Author -->
+                                    <div class="col-md-9 p-4">
+                                        <div class="card-body">
+
+                                            <!-- Rating Section with Custom Badge and Animated Star -->
+                                            <h5 class="card-title d-flex align-items-center mb-3">
+                                                <span class="fw-bold me-2 fs-4">Rating:</span> 
+                                                <span class="badge bg-warning text-dark fs-5 p-2"><%= review.rating %></span>
+                                                <i class="fas fa-star text-warning fs-4 ms-2 animate__animated animate__pulse animate__infinite"></i>
+                                            </h5>
+                                            
+                                            <!-- Author Info -->
+                                            <h6 class="card-subtitle mb-3 text-muted">
+                                                <i class="fas fa-user-circle me-1 fs-5"></i>
+                                                <span class="fw-bold">By</span> <%= review.author.username %>
+                                            </h6>
+                                            
+                                            <!-- Review Text with Animated Quote -->
+                                            <p class="card-text fs-5">
+                                                <i class="fas fa-quote-left text-muted fs-4 me-2"></i>
+                                                <%= review.body %>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Delete Button Section -->
+                                     <% if (currentUser && review.author.id===(currentUser.id)) { %> 
+                                    <div class="col-md-3 d-flex align-items-center justify-content-end p-3">
+                                        <form action="/campgrounds/<%= camp.id %>/reviews/<%= review.id %>?_method=DELETE" method="POST">
+                                            <button class="btn btn-danger btn-lg d-flex align-items-center shadow" style="border-radius: 30px;">
+                                                <i class="fas fa-trash-alt me-2"></i> Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <% } %>
+                                </div>
                             </div>
-                            <div class="col-lg-3 col-md-4 text-end">
-                                <form action="/campgrounds/<%= camp.id %>/reviews/<%= review.id %>?_method=DELETE" method="POST">
-                                    <button class="btn btn-sm btn-outline-danger">Delete Review</button>
-                                </form>
-                            </div>
-                        </div>
-                    <% }) %>
+                        <% }) %>
+                    </div>
+
                 </div>
             </div>
         </div>
