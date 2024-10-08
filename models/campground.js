@@ -6,11 +6,14 @@ const Schema = mongoose.Schema;
 const CampgroundSchema = new Schema({
     title: String,
     price: Number,
-    image: String,
+    images: [{
+        url: String,
+        fileName: String
+    }],
     description: String,
     location: String,
     author: {
-        type: Schema.Types.ObjectId, 
+        type: Schema.Types.ObjectId,
         ref: 'User'
     },
     reviews: [

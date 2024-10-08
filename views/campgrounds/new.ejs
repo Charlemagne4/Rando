@@ -1,7 +1,7 @@
 <% layout('./layouts/boilerplate') %>
     <div class="col-6 offset-3">
         <h1 class="text-center">NEW Campground</h1>
-        <form action="/campgrounds" method="POST" class="myForm row g-3" novalidate>
+        <form action="/campgrounds" method="POST" class="myForm row g-3" novalidate enctype="multipart/form-data">
 
 
             <div class="mb-3">
@@ -21,14 +21,15 @@
                     Missing!!
                 </div>
             </div>
-            <div class="mb-3">
+            <input type="file" name="campground[images]" id="" multiple>
+            <!-- <div class="mb-3">
                 <label for="image" class="form-label">Image URL</label>
                 <input type="text" class="form-control" id="image" placeholder="Image URL" name="campground[image]"
                     required>
                 <div class="invalid-feedback">
                     Missing!!
                 </div>
-            </div>
+            </div> -->
             <div class="mb-3">
                 <label for="description" class="form-label">Description</label>
                 <textarea type="text" class="form-control" id="description" placeholder="Description" rows="4" cols="50"
