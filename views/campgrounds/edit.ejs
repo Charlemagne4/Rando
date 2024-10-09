@@ -2,7 +2,7 @@
     <div class="col-6 offset-3">
         <h1 class="text-center">Edit Campground</h1>
 
-        <form action="/campgrounds/<%= camp.id %>?_method=PUT" method="POST" novalidate class="myForm">
+        <form action="/campgrounds/<%= camp.id %>?_method=PUT" method="POST" novalidate class="myForm" enctype="multipart/form-data">
 
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
@@ -10,9 +10,23 @@
                     value="<%= camp.title %>" required>
             </div>
             <div class="mb-3">
-                <label for="locimageation" class="form-label">Image URL</label>
-                <input type="text" class="form-control" id="image" placeholder="URL" name="campground[image]"
-                    value="<%= camp.image %>" required>
+                <label for="images" class="form-label">Add more images</label>
+                <div class="input-group">
+                    <label class="input-group-text" for="images">Campground Image</label>
+                    <input type="file" class="form-control" name="campground[images]" id="images" multiple>
+                </div>
+            </div> 
+            <div class="container">
+                <div class="row mb-3">
+                    <% camp.images.forEach((img, index) => { %>
+                        <div class="col-md-4 position-relative">
+                            <label class="d-block position-relative">
+                                <img src="<%= img.thumbnail %>" class="img-thumbnail w-100" style="height: 200px; object-fit: cover;">
+                                <input class="form-check-input position-absolute" id="image-<%= img.index %>" type="checkbox" name="deleteImages[]" value="<%= img.fileName %>" style="top: 10px; right: 10px;">
+                            </label>
+                        </div>
+                    <% }) %>
+                </div>
             </div>
             <div class="mb-3">
                 <label for="location" class="form-label">Location</label>

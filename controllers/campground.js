@@ -1,4 +1,5 @@
 const Campground = require('../models/campground');
+const { storage, cloudinary } = require('../cloudinary')
 
 module.exports.index = async (req, res) => {
     const camps = await Campground.find({})
@@ -42,7 +43,6 @@ module.exports.createNewCampground = async (req, res, next) => {
     newCamp.images = req.files.map(f => ({ url: f.path, fileName: f.filename }))
     await newCamp.save();
     console.log(newCamp);
-
     req.flash('success', "Waw ak ta3ref tzid campground")
     res.redirect(`/campgrounds/${newCamp.id}`)
 
@@ -50,12 +50,19 @@ module.exports.createNewCampground = async (req, res, next) => {
 
 module.exports.updateCampground = async (req, res) => {
     const { id } = req.params
-    const camp = await Campground.findById(id)
-    if (!camp.author.equals(req.user._id)) {
-        req.flash('error', "Action Not Authorized")
-        return res.redirect(`/campgrounds/${id}`)
+    // console.log('req.body: ', req.body);
+    const updatedCamp = await Campground.findByIdAndUpdate(id, req.body.campground)
+    const images = req.files.map(f => ({ url: f.path, fileName: f.filename }))
+    updatedCamp.images.push(...images);
+    if (req.body.deleteImages) {
+        for (let imageFileName of req.body.deleteImages) {
+            await cloudinary.uploader.destroy(imageFileName)
+        };
+        await updatedCamp.updateOne({ $pull: { images: { fileName: { $in: req.body.deleteImages } } } })
+        // console.log('updatedCamp: ', updatedCamp);
+
     }
-    await Campground.findByIdAndUpdate(id, req.body.campground)
+    await updatedCamp.save()
     req.flash('success', "ZID rak ta3ref Tupdati Campground")
     res.redirect(`/campgrounds/${id}`)
 }

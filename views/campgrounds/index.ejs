@@ -19,7 +19,7 @@
                         <div class="row g-0">
                             <!-- Campground Image -->
                             <div class="col-md-5">
-                                <img src="<%= camp.images[0].url %>" class="img-fluid rounded-start" alt="<%= camp.title %> Image" style="height: 200px; object-fit: cover;">
+                                <img src="<%= camp.images[0] && (camp.images[0].url)?camp.images[0].url:'https://www.19fortyfive.com/wp-content/uploads/2021/07/Poland-M1-Abrams.jpg' %>" class="img-fluid rounded-start" alt="<%= camp.title %> Image" style="height: 200px; object-fit: cover;">
                             </div>
 
                             <!-- Campground Info -->
