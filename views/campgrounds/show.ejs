@@ -1,5 +1,6 @@
 <% layout('./layouts/boilerplate') %>
 <link rel="stylesheet" href="/stylesheets/stars.css">
+<link rel="stylesheet" href="/stylesheets/mapTiler.css">
 
 <div class="container mt-5">
     <div class="row g-5">
@@ -66,7 +67,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Review Section -->
         <div class="col-lg-6 col-md-12">
             <div class="card shadow-lg border-0">
@@ -153,5 +153,16 @@
                 </div>
             </div>
         </div>
+        <!-- map Section -->
+        <div class="col-lg-6 col-md-12">
+            <div id="map"></div>
+        </div>
     </div>
 </div>
+
+<script>
+    const mapApiKey = "<%= process.env.MAPTILER_API_KEY %>"; 
+    const campground = <%-JSON.stringify(camp)%>; 
+    console.log(campground)
+</script>
+<script src="/javascripts/showMap.js"></script>

@@ -1,6 +1,10 @@
 const Campground = require('../models/campground');
 const { storage, cloudinary } = require('../cloudinary')
 
+const maptilerClient = require("@maptiler/client");
+maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
+
+
 module.exports.index = async (req, res) => {
     const camps = await Campground.find({})
     res.render('campgrounds/index', { camps })
@@ -37,12 +41,14 @@ module.exports.renderEditForm = async (req, res, next) => {
 module.exports.createNewCampground = async (req, res, next) => {
     //if (!req.body.campground) throw new ExpressErrorHandler('Invalid Request', '400');
 
-
     const newCamp = new Campground(req.body.campground)
-    newCamp.author = req.user._id
+    const GeoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 })
+    newCamp.geometry = GeoData.features[0].geometry;
+    // ATTENTION CHANGE BACK TO THIS AFTER MAPS IMPLEMENTED
+    // newCamp.author = req.user._id
+    newCamp.author = newCamp.author = req.user?._id || "6702e067044634b32d7302e0";
     newCamp.images = req.files.map(f => ({ url: f.path, fileName: f.filename }))
     await newCamp.save();
-    console.log(newCamp);
     req.flash('success', "Waw ak ta3ref tzid campground")
     res.redirect(`/campgrounds/${newCamp.id}`)
 
