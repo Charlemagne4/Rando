@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Campground = require("../models/campground");
 const axios = require('axios');
 const cities = require('./cities');
+const wilayas = require('./Wilaya');
 const { descriptions, places, descriptors, price } = require("./seedHelpers");
 
 mongoose.connect('mongodb://127.0.0.1:27017/RanDo').then(() => {
@@ -45,8 +46,8 @@ populatePictures(pictures).then(result => {
 const seedDB = async () => {
     await Campground.deleteMany({}); // Pour effacer les anciennes données
 
-    for (let i = 0; i < 100; i++) {
-        const random58 = Math.floor(Math.random() * 58);
+    for (let i = 0; i < 300; i++) {
+        const random1000 = Math.floor(Math.random() * 1541);
 
         // Générer un nombre aléatoire entre 1 et 3
         const randomNum = Math.floor(Math.random() * 3) + 1;
@@ -59,10 +60,19 @@ const seedDB = async () => {
                 fileName: null
             });
         }
-
+        const city = cities[random1000];
+        const wilaya = wilayas.find(w => w.code === city.wilaya_id);
+        const location = `${city.city}, ${wilaya.name}`;
         const camp = new Campground({
             title: `${sample(descriptors)} ${sample(places)}`,
-            location: `${cities[random58].city}, ${cities[random58].country}`,
+            location,
+            geometry: {
+                type: "Point",
+                coordinates: [
+                    cities[random1000].longitude,
+                    cities[random1000].latitude,
+                ]
+            },
             description: `${sample(descriptions)}`,
             price: `${sample(price)}`,
             images: images, // Ajouter le tableau d'images

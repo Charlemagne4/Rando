@@ -5,7 +5,6 @@ const { campgroundJoiSchema, reviewJoiSchema } = require('./schemas');
 
 
 module.exports.isLoggedIn = (req, res, next) => {
-    return next()
     console.log('User: ', req.user);
     if (!req.isAuthenticated()) {
         req.session.returnTo = req.originalUrl;

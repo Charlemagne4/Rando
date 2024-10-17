@@ -1,11 +1,13 @@
-html, body {
-  margin: 0;
+
+body {
+    margin: 0; 
+    padding: 0;
 }
 
 #map {
     position: relative; /* change from absolute to relative */
     height: 300px;
-    width: 100%;
+    width: 120%;
     margin-bottom: 20px;
     margin-left: 0; /* Add some spacing between map and the content below */
 }

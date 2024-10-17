@@ -1,5 +1,7 @@
 <% layout('./layouts/boilerplate') %>
-
+<link rel="stylesheet" href="/stylesheets/mapCluster.css">
+<div id="map">
+</div>
 <div class="container mt-5">
     <!-- Page Heading -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -8,9 +10,11 @@
             <i class="fas fa-plus-circle me-2"></i> New Campground
         </a>
     </div>
-
+     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+     </div>
     <!-- List of Campgrounds -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        
         <% for(let camp of camps) { %>
             <div class="col">
                 <!-- Make the entire card clickable -->
@@ -50,3 +54,9 @@
         <% } %>
     </div>
 </div>
+
+<script>
+    const mapApiKey = "<%= process.env.MAPTILER_API_KEY %>";
+    const campgrounds = {features:<%-JSON.stringify(camps)%>};
+</script>
+<script src="/javascripts/mapCluster.js"></script>

@@ -44,9 +44,7 @@ module.exports.createNewCampground = async (req, res, next) => {
     const newCamp = new Campground(req.body.campground)
     const GeoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 })
     newCamp.geometry = GeoData.features[0].geometry;
-    // ATTENTION CHANGE BACK TO THIS AFTER MAPS IMPLEMENTED
-    // newCamp.author = req.user._id
-    newCamp.author = newCamp.author = req.user?._id || "6702e067044634b32d7302e0";
+    newCamp.author = req.user._id
     newCamp.images = req.files.map(f => ({ url: f.path, fileName: f.filename }))
     await newCamp.save();
     req.flash('success', "Waw ak ta3ref tzid campground")

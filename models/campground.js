@@ -11,7 +11,7 @@ const imageSchema = new Schema({
 imageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upload', '/upload/w_300')
 })
-
+const options = { toJSON: { virtuals: true } };
 const CampgroundSchema = new Schema({
     title: String,
     price: Number,
@@ -39,6 +39,14 @@ const CampgroundSchema = new Schema({
             ref: 'Review'
         }
     ]
+}, options)
+CampgroundSchema.virtual('properties').get(function () {
+    return {
+        title: this.title,
+        price: this.price,
+        description: this.description,
+        id: this.id
+    }
 })
 CampgroundSchema.post('findOneAndDelete', async (data) => {
     if (data) {

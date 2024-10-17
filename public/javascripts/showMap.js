@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
         maptilersdk.config.apiKey = mapApiKey;
         const map = new maptilersdk.Map({
             container: 'map', // container's id or the HTML element to render the map
-            style: "jp-mierune-dark",
+            style: maptilersdk.MapStyle.DATAVIZ.DARK,
             center: campground.geometry.coordinates, // starting position [lng, lat]
-            zoom: 10, // starting zoom
+            zoom: 6, // starting zoom
         });
         const marker = new maptilersdk.Marker()
             .setLngLat(campground.geometry.coordinates)
