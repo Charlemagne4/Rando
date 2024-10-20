@@ -1,0 +1,72 @@
+/* Ajustement de la carte pour qu'elle soit plus haute que large */
+.card {
+    position: relative;
+    overflow: hidden;
+    width: 100%; /* S'assurer que la carte prend toute la largeur disponible */
+    height: 100%;/*  Hauteur plus importante pour un look plus vertical */
+    border: none;
+    border-radius: 20px;
+}
+
+/* S'assurer que l'image occupe tout l'espace disponible verticalement */
+.card img {
+    width: 300px; /* Set a fixed width */
+    height: 450px; /* Set a fixed height */
+    object-fit: cover; /* This will crop the image to fit */
+    display: block;
+    transition: transform 0.5s ease; /* Smooth transition for zoom */
+}
+
+
+/* Agrandissement de l'image au survol */
+.card:hover img {
+    transform: scale(1.1); /* Zoom sur l'image lors du survol */
+}
+
+/* Informations qui apparaissent au survol */
+.card-body {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    opacity: 1;
+    transform: translateY(0%);
+    transition: transform 0.5s ease, opacity 0.5s ease; /* Transition pour l'apparition */
+}
+
+/* Afficher les infos au survol */
+.card:hover .card-body {
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+/* Ajustements sur les textes */
+.card-title,
+.card-text,
+.text-body-secondary {
+    color: white; /* Uniformité dans la couleur du texte */
+    opacity: 1;
+    transition: opacity 0.3s ease; /* Transition pour la couleur du texte */
+}
+
+.card-body .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px; /* Espacement entre le titre et le texte */
+}
+
+.card-body .card-text {
+    font-size: 1rem;
+}
+
+.card-body .text-body-secondary {
+    font-size: 0.85rem;
+    color: #dfe6e9; /* Couleur pour le texte secondaire */
+}
+

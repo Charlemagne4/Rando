@@ -3,7 +3,7 @@ const User = require("../models/user")
 module.exports.registerForm = (req, res) => {
     res.render('users/register')
 }
-module.exports.registerUser= async (req, res, next) => {
+module.exports.registerUser = async (req, res, next) => {
     try {
         const { password, username, email } = req.body;
         const newUser = new User(
@@ -28,7 +28,7 @@ module.exports.registerUser= async (req, res, next) => {
 
 }
 
-module.exports.loginForm= (req, res) => {
+module.exports.loginForm = (req, res) => {
     console.log(req.path, req.originalUrl);
     res.render('users/login')
 }
@@ -51,6 +51,6 @@ module.exports.logout = (req, res, next) => {
             return next(err)
         }
         req.flash('success', 'Athala El jeune')
-        res.redirect('/campgrounds')
+        res.redirect('/')
     })
 }

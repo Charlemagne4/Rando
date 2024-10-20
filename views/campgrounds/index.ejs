@@ -1,5 +1,9 @@
 <% layout('./layouts/boilerplate') %>
 <link rel="stylesheet" href="/stylesheets/mapCluster.css">
+<link rel="stylesheet" href="/stylesheets/globale.css">
+<link rel="stylesheet" href="/stylesheets/index.css">
+
+
 <div id="map">
 </div>
 <div class="container mt-5">
@@ -16,14 +20,14 @@
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         
         <% for(let camp of camps) { %>
-            <div class="col">
+            <div class="col px-3 ">
                 <!-- Make the entire card clickable -->
                 <a href="/campgrounds/<%= camp.id %>" class="text-decoration-none">
-                    <div class="card h-100 shadow-lg border-0" style="border-radius: 20px;">
+                    <div class="card shadow-lg border-0">
                         <div class="row g-0">
                             <!-- Campground Image -->
-                            <div class="col-md-5">
-                                <img src="<%= camp.images[0] && (camp.images[0].url)?camp.images[0].url:'https://www.19fortyfive.com/wp-content/uploads/2021/07/Poland-M1-Abrams.jpg' %>" class="img-fluid rounded-start" alt="<%= camp.title %> Image" style="height: 200px; object-fit: cover;">
+                            <div class="">
+                                <img src="<%= camp.images[0] && (camp.images[0].url)?camp.images[0].url:'https://www.19fortyfive.com/wp-content/uploads/2021/07/Poland-M1-Abrams.jpg' %>" class="img-fluid rounded-start d-block w-100" alt="<%= camp.title %> Image">
                             </div>
 
                             <!-- Campground Info -->
@@ -35,13 +39,13 @@
                                     </h5>
 
                                     <!-- Description -->
-                                    <p class="card-text text-muted">
+                                    <p class="card-text">
                                         <%= camp.description.length > 100 ? camp.description.substring(0, 100) + '...' : camp.description %>
                                     </p>
 
                                     <!-- Location -->
                                     <p class="card-text">
-                                        <small class="text-body-secondary">
+                                        <small class="">
                                             <i class="fas fa-map-marker-alt me-1"></i> <%= camp.location %>
                                         </small>
                                     </p>

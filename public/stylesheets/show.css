@@ -1,0 +1,7 @@
+.card img {
+    width: 900px; /* Set a fixed width */
+    height: 600px; /* Set a fixed height */
+    object-fit: cover; /* This will crop the image to fit */
+    display: block;
+    transition: transform 0.5s ease; /* Smooth transition for zoom */
+}

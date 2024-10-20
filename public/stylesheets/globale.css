@@ -1,0 +1,173 @@
+/* Global Variables */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #34495e;
+    --success-color: #43a047;
+    --danger-color: #e74c3c;
+    --text-color: #2c3e50;
+    --light-text: #1f595e;
+    --background-color: #fff;
+}
+
+/* Global Styles */
+body {
+    background: linear-gradient(135deg, #4e878f, #037d8d);
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h3, h2 {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Button Base Styles */
+.btn {
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Button Variants */
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #388e3c; /* Adjusted hover state */
+}
+
+/* Card Styles */
+.card {
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: var(--background-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: var(--light-text);
+}
+
+.card-text .fas.fa-map-marker-alt {
+    color: #1e88e5; /* Map marker color */
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Carousel Styles */
+.carousel-inner img {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+}
+
+/* Review Section */
+.card-subtitle {
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+.card p {
+    font-size: 1rem;
+}
+
+/* Review Form */
+form .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+}
+
+form button {
+    border-radius: 25px;
+}
+
+/* Map Styles */
+#map {
+    width: 100%;
+    height: 400px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* General Text Styles */
+p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--light-text);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+    }
+}

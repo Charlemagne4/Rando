@@ -7,7 +7,7 @@ body {
 #map {
     position: relative; /* change from absolute to relative */
     height: 300px;
-    width: 120%;
+    width: 100%;
     margin-bottom: 20px;
     margin-left: 0; /* Add some spacing between map and the content below */
 }
