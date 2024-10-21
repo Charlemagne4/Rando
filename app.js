@@ -1,4 +1,4 @@
-if (process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
@@ -14,15 +14,18 @@ const ExpressErrorHandler = require("./Utility/ExpressErrorHandler");
 const passport = require('passport')
 const localStrategy = require('passport-local')
 const User = require('./models/user')
+//security requirements 
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 
 const port = 3000
 const app = express()
 const campgroundsRoutes = require('./routes/campgrounds')
 const reviewsRoutes = require('./routes/reviews');
 const usersRoutes = require('./routes/users')
-
-
-mongoose.connect('mongodb://127.0.0.1:27017/RanDo').then(() => {
+const MongoStore = require('connect-mongo');
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/RanDo'
+mongoose.connect(dbUrl).then(() => {
     console.log("CONNECTED!!");
 }).catch(err => {
     console.log("CONNECTION FAILED!!");
@@ -38,9 +41,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')))
 
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: process.env.SECRET
+    }
+});
 const sessionConfig = {
     secret: 'vintage',
     resave: false,
+    store: store,
     saveUninitialized: true,
     cookie: {
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
@@ -58,6 +69,50 @@ app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+//security uses
+app.use(mongoSanitize())
+app.use(helmet())
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+    "https://cdn.maptiler.com"
+];
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://cdn.jsdelivr.net",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+    "https://cdn.maptiler.com",
+    "https://cdnjs.cloudflare.com/"
+];
+const connectSrcUrls = [
+    "https://api.maptiler.com/"
+];
+const fontSrcUrls = ["https://cdnjs.cloudflare.com"];
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/drcfc3chz/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+                "https://images.unsplash.com/",
+                "https://icon-library.com/images",
+                "https://api.maptiler.com/"
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
 
 app.get('/faker', async (req, res) => {
     const user = new User(
@@ -73,7 +128,7 @@ app.get('/faker', async (req, res) => {
 })
 
 app.use('/', function (req, res, next) {
-    res.locals.currentUser = req.user; 
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success')
     res.locals.error = req.flash('error')
     next()
