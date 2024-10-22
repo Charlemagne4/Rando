@@ -56,6 +56,11 @@ module.exports.updateCampground = async (req, res) => {
     const { id } = req.params
     // console.log('req.body: ', req.body);
     const updatedCamp = await Campground.findByIdAndUpdate(id, req.body.campground)
+    if (req.body.campground.location !== updatedCamp.location) {
+        console.log("im in the geodata loop");
+        const GeoData = await maptilerClient.geocoding.forward(req.body.campground.location, { limit: 1 })
+        updatedCamp.geometry = GeoData.features[0].geometry;
+    }
     const images = req.files.map(f => ({ url: f.path, fileName: f.filename }))
     updatedCamp.images.push(...images);
     if (req.body.deleteImages) {
