@@ -21,7 +21,7 @@
                 </li>
             </ul>   
             <div class="navbar-nav ms-auto"> <!-- Add ms-auto to push Login to the right -->
-                <% if (!currentUser) { %>
+               <% if (typeof currentUser === 'undefined' || !currentUser) { %>
                     <a class="nav-link" href="/login" aria-disabled="true">Login</a>
                     <a class="nav-link" href="/Register" aria-disabled="true">Register</a>
                 <% } else { %>
