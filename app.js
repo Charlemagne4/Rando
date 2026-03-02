@@ -1,159 +1,158 @@
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config()
+  require('dotenv').config();
 }
 
-const express = require('express')
-const session = require('express-session')
-const flash = require('connect-flash')
-const path = require('path')
-const mongoose = require("mongoose");
-const ejsMate = require('ejs-mate')
-const methodOverride = require('method-override')
+const express = require('express');
+const session = require('express-session');
+const flash = require('connect-flash');
+const path = require('path');
+const mongoose = require('mongoose');
+const ejsMate = require('ejs-mate');
+const methodOverride = require('method-override');
 const displayCurrentTime = require('./Utility/time');
-const ExpressErrorHandler = require("./Utility/ExpressErrorHandler");
-const passport = require('passport')
-const localStrategy = require('passport-local')
-const User = require('./models/user')
-//security requirements 
+const ExpressErrorHandler = require('./Utility/ExpressErrorHandler');
+const passport = require('passport');
+const localStrategy = require('passport-local');
+const User = require('./models/user');
+//security requirements
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 
-const port = 3000
-const app = express()
-const campgroundsRoutes = require('./routes/campgrounds')
+const port = 3000;
+const app = express();
+const campgroundsRoutes = require('./routes/campgrounds');
 const reviewsRoutes = require('./routes/reviews');
-const usersRoutes = require('./routes/users')
+const usersRoutes = require('./routes/users');
 const MongoStore = require('connect-mongo');
-const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/RanDo'
-mongoose.connect(dbUrl).then(() => {
-    console.log("CONNECTED!!");
-}).catch(err => {
-    console.log("CONNECTION FAILED!!");
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/RanDo';
+mongoose
+  .connect(dbUrl)
+  .then(() => {
+    console.log('CONNECTED!!');
+  })
+  .catch((err) => {
+    console.log('CONNECTION FAILED!!');
     console.log(err);
-});
-
-
+  });
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.engine("ejs", ejsMate);
+app.engine('ejs', ejsMate);
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')));
 
 const store = MongoStore.create({
-    mongoUrl: dbUrl,
-    touchAfter: 24 * 60 * 60,
-    crypto: {
-        secret: process.env.SECRET
-    }
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60,
+  crypto: {
+    secret: process.env.SECRET,
+  },
 });
 const sessionConfig = {
-    secret: 'vintage',
-    resave: false,
-    store: store,
-    saveUninitialized: true,
-    cookie: {
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        secure: false, // Make sure secure is false for HTTP in development
-        httpOnly: true, // Optional, prevents JavaScript access to cookies
-    }
+  secret: 'vintage',
+  resave: false,
+  store: store,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    secure: false, // Make sure secure is false for HTTP in development
+    httpOnly: true, // Optional, prevents JavaScript access to cookies
+  },
 };
 
-app.use(session(sessionConfig))
-app.use(flash())
+app.use(session(sessionConfig));
+app.use(flash());
 //authentification init with passport
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new localStrategy(User.authenticate()))
-passport.serializeUser(User.serializeUser())
-passport.deserializeUser(User.deserializeUser())
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 //security uses
-app.use(mongoSanitize())
-app.use(helmet())
+app.use(mongoSanitize());
+app.use(helmet());
 const scriptSrcUrls = [
-    "https://stackpath.bootstrapcdn.com/",
-    "https://kit.fontawesome.com/",
-    "https://cdnjs.cloudflare.com/",
-    "https://cdn.jsdelivr.net",
-    "https://cdn.maptiler.com"
+  'https://stackpath.bootstrapcdn.com/',
+  'https://kit.fontawesome.com/',
+  'https://cdnjs.cloudflare.com/',
+  'https://cdn.jsdelivr.net',
+  'https://cdn.maptiler.com',
 ];
 const styleSrcUrls = [
-    "https://kit-free.fontawesome.com/",
-    "https://cdn.jsdelivr.net",
-    "https://fonts.googleapis.com/",
-    "https://use.fontawesome.com/",
-    "https://cdn.maptiler.com",
-    "https://cdnjs.cloudflare.com/"
+  'https://kit-free.fontawesome.com/',
+  'https://cdn.jsdelivr.net',
+  'https://fonts.googleapis.com/',
+  'https://use.fontawesome.com/',
+  'https://cdn.maptiler.com',
+  'https://cdnjs.cloudflare.com/',
 ];
 const connectSrcUrls = [
-    "https://api.maptiler.com/"
+  'https://api.maptiler.com/',
+  'https://cdn.maptiler.com',
+  'https://cdn.jsdelivr.net/',
 ];
-const fontSrcUrls = ["https://cdnjs.cloudflare.com"];
+const fontSrcUrls = ['https://cdnjs.cloudflare.com'];
 app.use(
-    helmet.contentSecurityPolicy({
-        directives: {
-            defaultSrc: [],
-            connectSrc: ["'self'", ...connectSrcUrls],
-            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
-            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
-            workerSrc: ["'self'", "blob:"],
-            objectSrc: [],
-            imgSrc: [
-                "'self'",
-                "blob:",
-                "data:",
-                "https://res.cloudinary.com/drcfc3chz/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
-                "https://images.unsplash.com/",
-                "https://icon-library.com/images",
-                "https://api.maptiler.com/"
-            ],
-            fontSrc: ["'self'", ...fontSrcUrls],
-        },
-    })
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", 'blob:'],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        'blob:',
+        'data:',
+        'https://res.cloudinary.com/drcfc3chz/', //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+        'https://images.unsplash.com/',
+        'https://icon-library.com/images',
+        'https://api.maptiler.com/',
+        'https://cdn.maptiler.com',
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  }),
 );
 
 app.get('/faker', async (req, res) => {
-    const user = new User(
-        {
-            email: 'moha@gmail.com',
-            username: 'moh EL FAKER'
-
-        }
-    )
-    const newUser = await User.register(user, '1234')
-    res.send(newUser);
-
-})
+  const user = new User({
+    email: 'moha@gmail.com',
+    username: 'moh EL FAKER',
+  });
+  const newUser = await User.register(user, '1234');
+  res.send(newUser);
+});
 
 app.use('/', function (req, res, next) {
-    res.locals.currentUser = req.user;
-    res.locals.success = req.flash('success')
-    res.locals.error = req.flash('error')
-    next()
-})
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+});
 //ROUTES
-app.use("/", usersRoutes)
-app.use("/campgrounds", campgroundsRoutes)
-app.use("/campgrounds/:id/reviews", reviewsRoutes)
+app.use('/', usersRoutes);
+app.use('/campgrounds', campgroundsRoutes);
+app.use('/campgrounds/:id/reviews', reviewsRoutes);
 
 //home(in progress or might delete)
 app.get('/', (req, res) => {
-    res.render('home')
-})
-
+  res.render('home');
+});
 
 app.all('*', (req, res, next) => {
-    next(new ExpressErrorHandler("Not Found!", 404))
-})
-//error handling 
+  next(new ExpressErrorHandler('Not Found!', 404));
+});
+//error handling
 app.use((err, req, res, next) => {
-    const { message = "mhmmm...how ??", status = 500 } = err;
-    res.status(status)
-    res.render('error', { err })
-})
+  const { message = 'mhmmm...how ??', status = 500 } = err;
+  res.status(status);
+  res.render('error', { err });
+});
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 //to Time the nodemon shell
-displayCurrentTime(); 
+displayCurrentTime();

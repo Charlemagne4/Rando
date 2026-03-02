@@ -60,7 +60,7 @@
 </div>
 
 <script>
-    const mapApiKey = "<%= process.env.MAPTILER_API_KEY %>";
+    const mapApiKey = "<%= process.env.MAPTILER_API_KEY %>"; 
     const campgrounds = {features:<%-JSON.stringify(camps)%>};
 </script>
 <script crossorigin="anonymous" src="/javascripts/mapCluster.js"></script>
