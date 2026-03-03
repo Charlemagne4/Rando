@@ -14,16 +14,16 @@ const ExpressErrorHandler = require('./Utility/ExpressErrorHandler');
 const passport = require('passport');
 const localStrategy = require('passport-local');
 const User = require('./models/user');
-// needed for render deployement ?
-if (process.env.NODE_ENV === 'production') {
-  app.set('trust proxy', 1);
-}
 //security requirements
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 
 const port = 3000;
 const app = express();
+// needed for render deployement ?
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 const campgroundsRoutes = require('./routes/campgrounds');
 const reviewsRoutes = require('./routes/reviews');
 const usersRoutes = require('./routes/users');
