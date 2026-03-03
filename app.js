@@ -14,6 +14,10 @@ const ExpressErrorHandler = require('./Utility/ExpressErrorHandler');
 const passport = require('passport');
 const localStrategy = require('passport-local');
 const User = require('./models/user');
+// needed for render deployement ?
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 //security requirements
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
@@ -49,7 +53,6 @@ const store = MongoStore.create({
     secret: process.env.SECRET,
   },
 });
-app.set('trust proxy', 1);
 const sessionConfig = {
   secret: 'vintage',
   resave: false,
