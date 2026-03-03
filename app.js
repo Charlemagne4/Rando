@@ -49,15 +49,17 @@ const store = MongoStore.create({
     secret: process.env.SECRET,
   },
 });
+app.set('trust proxy', 1);
 const sessionConfig = {
   secret: 'vintage',
   resave: false,
   store: store,
   saveUninitialized: true,
   cookie: {
+    sameSite: 'lax',
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
-    secure: false, // Make sure secure is false for HTTP in development
+    secure: process.env.NODE_ENV === 'production', // Make sure secure is false for HTTP in development
     httpOnly: true, // Optional, prevents JavaScript access to cookies
   },
 };

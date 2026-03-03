@@ -1,12 +1,12 @@
-<% if (success?.length) { %>
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-  <strong>ZAZZY!</strong> <%= success %>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+<% if (success.length > 0) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>ZAZZY!</strong> <%= success[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
 <% } %>
-<% if (error?.length) { %>
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-  <strong>Wsh Ak Diiiir!</strong> <%= error %>
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+<% if (error.length > 0) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Wsh Ak Diiiir!</strong> <%= error[0] %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
 <% } %>
